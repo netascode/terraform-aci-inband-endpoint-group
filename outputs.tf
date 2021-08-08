@@ -1,9 +1,9 @@
 output "dn" {
-  value       = aci_rest.fvTenant.id
-  description = "Distinguished name of `fvTenant` object."
+  value       = aci_rest.mgmtInB.id
+  description = "Distinguished name of `mgmtInB` object."
 }
 
 output "name" {
-  value       = aci_rest.fvTenant.content.name
-  description = "Tenant name."
+  value       = aci_rest.mgmtInB.content.name
+  description = "Inband endpoint group name."
 }

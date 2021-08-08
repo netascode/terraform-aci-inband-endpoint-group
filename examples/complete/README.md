@@ -1,5 +1,5 @@
 <!-- BEGIN_TF_DOCS -->
-# Scaffolding Example
+# Inband Endpoint Group Example
 
 To run this example you need to execute:
 
@@ -12,12 +12,17 @@ $ terraform apply
 Note that this example will create resources. Resources can be destroyed with `terraform destroy`.
 
 ```hcl
-module "aci_scaffolding" {
-  source = "netascode/scaffolding/aci"
+module "aci_inband_endpoint_group" {
+  source = "netascode/inband-endpoint-group/aci"
 
-  name        = "ABC"
-  alias       = "ABC-ALIAS"
-  description = "My Description"
+  name          = "INB1"
+  vlan          = 10
+  bridge_domain = "INB1"
+  contracts = {
+    providers          = ["CON1"]
+    consumers          = ["CON1"]
+    imported_consumers = ["I-CON1"]
+  }
 }
 
 ```

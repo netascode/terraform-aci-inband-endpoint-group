@@ -14,35 +14,98 @@ terraform {
 module "main" {
   source = "../.."
 
-  name        = "ABC"
-  alias       = "ALIAS"
-  description = "DESCR"
+  name          = "INB1"
+  vlan          = 10
+  bridge_domain = "INB1"
+  contracts = {
+    providers          = ["CON1"]
+    consumers          = ["CON1"]
+    imported_consumers = ["I-CON1"]
+  }
 }
 
-data "aci_rest" "fvTenant" {
-  dn = "uni/tn-ABC"
+data "aci_rest" "mgmtInB" {
+  dn = "uni/tn-mgmt/mgmtp-default/inb-${module.main.name}"
 
   depends_on = [module.main]
 }
 
-resource "test_assertions" "fvTenant" {
-  component = "fvTenant"
+resource "test_assertions" "mgmtInB" {
+  component = "mgmtInB"
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.fvTenant.content.name
-    want        = "ABC"
+    got         = data.aci_rest.mgmtInB.content.name
+    want        = module.main.name
   }
 
-  equal "nameAlias" {
-    description = "nameAlias"
-    got         = data.aci_rest.fvTenant.content.nameAlias
-    want        = "ALIAS"
+  equal "encap" {
+    description = "encap"
+    got         = data.aci_rest.mgmtInB.content.encap
+    want        = "vlan-10"
   }
+}
 
-  equal "descr" {
-    description = "descr"
-    got         = data.aci_rest.fvTenant.content.descr
-    want        = "DESCR"
+data "aci_rest" "mgmtRsMgmtBD" {
+  dn = "${data.aci_rest.mgmtInB.id}/rsmgmtBD"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "mgmtRsMgmtBD" {
+  component = "mgmtRsMgmtBD"
+
+  equal "tnFvBDName" {
+    description = "tnFvBDName"
+    got         = data.aci_rest.mgmtRsMgmtBD.content.tnFvBDName
+    want        = "INB1"
+  }
+}
+
+data "aci_rest" "fvRsProv" {
+  dn = "${data.aci_rest.mgmtInB.id}/rsprov-CON1"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "fvRsProv" {
+  component = "fvRsProv"
+
+  equal "tnVzBrCPName" {
+    description = "tnVzBrCPName"
+    got         = data.aci_rest.fvRsProv.content.tnVzBrCPName
+    want        = "CON1"
+  }
+}
+
+data "aci_rest" "fvRsCons" {
+  dn = "${data.aci_rest.mgmtInB.id}/rscons-CON1"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "fvRsCons" {
+  component = "fvRsCons"
+
+  equal "tnVzBrCPName" {
+    description = "tnVzBrCPName"
+    got         = data.aci_rest.fvRsCons.content.tnVzBrCPName
+    want        = "CON1"
+  }
+}
+
+data "aci_rest" "fvRsConsIf" {
+  dn = "${data.aci_rest.mgmtInB.id}/rsconsIf-I-CON1"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "fvRsConsIf" {
+  component = "fvRsConsIf"
+
+  equal "tnVzCPIfName" {
+    description = "tnVzCPIfName"
+    got         = data.aci_rest.fvRsConsIf.content.tnVzCPIfName
+    want        = "I-CON1"
   }
 }

@@ -1,22 +1,27 @@
 <!-- BEGIN_TF_DOCS -->
-[![Tests](https://github.com/netascode/terraform-aci-scaffolding/actions/workflows/test.yml/badge.svg)](https://github.com/netascode/terraform-aci-scaffolding/actions/workflows/test.yml)
+[![Tests](https://github.com/netascode/terraform-aci-inband-endpoint-group/actions/workflows/test.yml/badge.svg)](https://github.com/netascode/terraform-aci-inband-endpoint-group/actions/workflows/test.yml)
 
-# Terraform ACI Scaffolding Module
+# Terraform ACI Inband Endpoint Group Module
 
-Description
+Manages ACI Inband Endpoint Group
 
 Location in GUI:
-`Tenants` » `XXX`
+`Tenants` » `mgmt` » `Node Management EPGs`
 
 ## Examples
 
 ```hcl
-module "aci_scaffolding" {
-  source = "netascode/scaffolding/aci"
+module "aci_inband_endpoint_group" {
+  source = "netascode/inband-endpoint-group/aci"
 
-  name        = "ABC"
-  alias       = "ABC-ALIAS"
-  description = "My Description"
+  name          = "INB1"
+  vlan          = 10
+  bridge_domain = "INB1"
+  contracts = {
+    providers          = ["CON1"]
+    consumers          = ["CON1"]
+    imported_consumers = ["I-CON1"]
+  }
 }
 
 ```
@@ -38,20 +43,25 @@ module "aci_scaffolding" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | Tenant name. | `string` | n/a | yes |
-| <a name="input_alias"></a> [alias](#input\_alias) | Tenant alias. | `string` | `""` | no |
-| <a name="input_description"></a> [description](#input\_description) | Tenant description. | `string` | `""` | no |
+| <a name="input_name"></a> [name](#input\_name) | Inband endpoint group name. | `string` | n/a | yes |
+| <a name="input_vlan"></a> [vlan](#input\_vlan) | Vlan ID. Minimum value: 1. Maximum value: 4096. | `number` | n/a | yes |
+| <a name="input_bridge_domain"></a> [bridge\_domain](#input\_bridge\_domain) | Bridge domain name. | `string` | n/a | yes |
+| <a name="input_contracts"></a> [contracts](#input\_contracts) | Contracts. | <pre>object({<br>    consumers          = optional(list(string))<br>    providers          = optional(list(string))<br>    imported_consumers = optional(list(string))<br>  })</pre> | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_dn"></a> [dn](#output\_dn) | Distinguished name of `fvTenant` object. |
-| <a name="output_name"></a> [name](#output\_name) | Tenant name. |
+| <a name="output_dn"></a> [dn](#output\_dn) | Distinguished name of `mgmtInB` object. |
+| <a name="output_name"></a> [name](#output\_name) | Inband endpoint group name. |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aci_rest.fvTenant](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
+| [aci_rest.fvRsCons](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
+| [aci_rest.fvRsConsIf](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
+| [aci_rest.fvRsProv](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
+| [aci_rest.mgmtInB](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
+| [aci_rest.mgmtRsMgmtBD](https://registry.terraform.io/providers/netascode/aci/latest/docs/resources/rest) | resource |
 <!-- END_TF_DOCS -->
