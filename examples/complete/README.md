@@ -13,16 +13,15 @@ Note that this example will create resources. Resources can be destroyed with `t
 
 ```hcl
 module "aci_inband_endpoint_group" {
-  source = "netascode/inband-endpoint-group/aci"
+  source  = "netascode/inband-endpoint-group/aci"
+  version = ">= 0.0.2"
 
-  name          = "INB1"
-  vlan          = 10
-  bridge_domain = "INB1"
-  contracts = {
-    providers          = ["CON1"]
-    consumers          = ["CON1"]
-    imported_consumers = ["I-CON1"]
-  }
+  name                        = "INB1"
+  vlan                        = 10
+  bridge_domain               = "INB1"
+  contract_consumers          = ["CON1"]
+  contract_providers          = ["CON1"]
+  contract_imported_consumers = ["I_CON1"]
 }
 
 ```

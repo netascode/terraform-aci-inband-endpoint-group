@@ -14,14 +14,12 @@ terraform {
 module "main" {
   source = "../.."
 
-  name          = "INB1"
-  vlan          = 10
-  bridge_domain = "INB1"
-  contracts = {
-    providers          = ["CON1"]
-    consumers          = ["CON1"]
-    imported_consumers = ["I-CON1"]
-  }
+  name                        = "INB1"
+  vlan                        = 10
+  bridge_domain               = "INB1"
+  contract_consumers          = ["CON1"]
+  contract_providers          = ["CON1"]
+  contract_imported_consumers = ["I_CON1"]
 }
 
 data "aci_rest" "mgmtInB" {
@@ -95,7 +93,7 @@ resource "test_assertions" "fvRsCons" {
 }
 
 data "aci_rest" "fvRsConsIf" {
-  dn = "${data.aci_rest.mgmtInB.id}/rsconsIf-I-CON1"
+  dn = "${data.aci_rest.mgmtInB.id}/rsconsIf-I_CON1"
 
   depends_on = [module.main]
 }
@@ -106,6 +104,6 @@ resource "test_assertions" "fvRsConsIf" {
   equal "tnVzCPIfName" {
     description = "tnVzCPIfName"
     got         = data.aci_rest.fvRsConsIf.content.tnVzCPIfName
-    want        = "I-CON1"
+    want        = "I_CON1"
   }
 }

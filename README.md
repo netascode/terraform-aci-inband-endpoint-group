@@ -12,16 +12,15 @@ Location in GUI:
 
 ```hcl
 module "aci_inband_endpoint_group" {
-  source = "netascode/inband-endpoint-group/aci"
+  source  = "netascode/inband-endpoint-group/aci"
+  version = ">= 0.0.2"
 
-  name          = "INB1"
-  vlan          = 10
-  bridge_domain = "INB1"
-  contracts = {
-    providers          = ["CON1"]
-    consumers          = ["CON1"]
-    imported_consumers = ["I-CON1"]
-  }
+  name                        = "INB1"
+  vlan                        = 10
+  bridge_domain               = "INB1"
+  contract_consumers          = ["CON1"]
+  contract_providers          = ["CON1"]
+  contract_imported_consumers = ["I_CON1"]
 }
 
 ```
@@ -46,7 +45,9 @@ module "aci_inband_endpoint_group" {
 | <a name="input_name"></a> [name](#input\_name) | Inband endpoint group name. | `string` | n/a | yes |
 | <a name="input_vlan"></a> [vlan](#input\_vlan) | Vlan ID. Minimum value: 1. Maximum value: 4096. | `number` | n/a | yes |
 | <a name="input_bridge_domain"></a> [bridge\_domain](#input\_bridge\_domain) | Bridge domain name. | `string` | n/a | yes |
-| <a name="input_contracts"></a> [contracts](#input\_contracts) | Contracts. | <pre>object({<br>    consumers          = optional(list(string))<br>    providers          = optional(list(string))<br>    imported_consumers = optional(list(string))<br>  })</pre> | `{}` | no |
+| <a name="input_contract_consumers"></a> [contract\_consumers](#input\_contract\_consumers) | List of contract consumers. | `list(string)` | `[]` | no |
+| <a name="input_contract_providers"></a> [contract\_providers](#input\_contract\_providers) | List of contract providers. | `list(string)` | `[]` | no |
+| <a name="input_contract_imported_consumers"></a> [contract\_imported\_consumers](#input\_contract\_imported\_consumers) | List of imported contract consumers. | `list(string)` | `[]` | no |
 
 ## Outputs
 
