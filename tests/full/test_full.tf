@@ -5,8 +5,8 @@ terraform {
     }
 
     aci = {
-      source  = "netascode/aci"
-      version = ">=0.2.0"
+      source  = "CiscoDevNet/aci"
+      version = ">=2.0.0"
     }
   }
 }
@@ -22,7 +22,7 @@ module "main" {
   contract_imported_consumers = ["I_CON1"]
 }
 
-data "aci_rest" "mgmtInB" {
+data "aci_rest_managed" "mgmtInB" {
   dn = "uni/tn-mgmt/mgmtp-default/inb-${module.main.name}"
 
   depends_on = [module.main]
@@ -33,19 +33,19 @@ resource "test_assertions" "mgmtInB" {
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.mgmtInB.content.name
+    got         = data.aci_rest_managed.mgmtInB.content.name
     want        = module.main.name
   }
 
   equal "encap" {
     description = "encap"
-    got         = data.aci_rest.mgmtInB.content.encap
+    got         = data.aci_rest_managed.mgmtInB.content.encap
     want        = "vlan-10"
   }
 }
 
-data "aci_rest" "mgmtRsMgmtBD" {
-  dn = "${data.aci_rest.mgmtInB.id}/rsmgmtBD"
+data "aci_rest_managed" "mgmtRsMgmtBD" {
+  dn = "${data.aci_rest_managed.mgmtInB.id}/rsmgmtBD"
 
   depends_on = [module.main]
 }
@@ -55,13 +55,13 @@ resource "test_assertions" "mgmtRsMgmtBD" {
 
   equal "tnFvBDName" {
     description = "tnFvBDName"
-    got         = data.aci_rest.mgmtRsMgmtBD.content.tnFvBDName
+    got         = data.aci_rest_managed.mgmtRsMgmtBD.content.tnFvBDName
     want        = "INB1"
   }
 }
 
-data "aci_rest" "fvRsProv" {
-  dn = "${data.aci_rest.mgmtInB.id}/rsprov-CON1"
+data "aci_rest_managed" "fvRsProv" {
+  dn = "${data.aci_rest_managed.mgmtInB.id}/rsprov-CON1"
 
   depends_on = [module.main]
 }
@@ -71,13 +71,13 @@ resource "test_assertions" "fvRsProv" {
 
   equal "tnVzBrCPName" {
     description = "tnVzBrCPName"
-    got         = data.aci_rest.fvRsProv.content.tnVzBrCPName
+    got         = data.aci_rest_managed.fvRsProv.content.tnVzBrCPName
     want        = "CON1"
   }
 }
 
-data "aci_rest" "fvRsCons" {
-  dn = "${data.aci_rest.mgmtInB.id}/rscons-CON1"
+data "aci_rest_managed" "fvRsCons" {
+  dn = "${data.aci_rest_managed.mgmtInB.id}/rscons-CON1"
 
   depends_on = [module.main]
 }
@@ -87,13 +87,13 @@ resource "test_assertions" "fvRsCons" {
 
   equal "tnVzBrCPName" {
     description = "tnVzBrCPName"
-    got         = data.aci_rest.fvRsCons.content.tnVzBrCPName
+    got         = data.aci_rest_managed.fvRsCons.content.tnVzBrCPName
     want        = "CON1"
   }
 }
 
-data "aci_rest" "fvRsConsIf" {
-  dn = "${data.aci_rest.mgmtInB.id}/rsconsIf-I_CON1"
+data "aci_rest_managed" "fvRsConsIf" {
+  dn = "${data.aci_rest_managed.mgmtInB.id}/rsconsIf-I_CON1"
 
   depends_on = [module.main]
 }
@@ -103,7 +103,7 @@ resource "test_assertions" "fvRsConsIf" {
 
   equal "tnVzCPIfName" {
     description = "tnVzCPIfName"
-    got         = data.aci_rest.fvRsConsIf.content.tnVzCPIfName
+    got         = data.aci_rest_managed.fvRsConsIf.content.tnVzCPIfName
     want        = "I_CON1"
   }
 }
