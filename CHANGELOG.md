@@ -1,3 +1,7 @@
+## 0.1.1 (unreleased)
+
+- Remove unnecessary `optional` experiment dependency
+
 ## 0.1.0
 
 - Migrate to devnet provider
