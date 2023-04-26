@@ -1,3 +1,7 @@
+## 0.1.2 (unreleased)
+
+- Add support for static routes
+
 ## 0.1.1
 
 - Remove unnecessary `optional` experiment dependency
