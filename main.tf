@@ -41,3 +41,12 @@ resource "aci_rest_managed" "mgmtRsMgmtBD" {
     tnFvBDName = var.bridge_domain
   }
 }
+
+resource "aci_rest_managed" "mgmtStaticRoute" {
+  for_each   = toset(var.static_routes)
+  dn         = "${aci_rest_managed.mgmtInB.dn}/staticroute-[${each.value}]"
+  class_name = "mgmtStaticRoute"
+  content = {
+    prefix = each.value
+  }
+}

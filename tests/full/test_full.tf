@@ -22,6 +22,7 @@ module "main" {
   contract_consumers          = ["CON1"]
   contract_providers          = ["CON1"]
   contract_imported_consumers = ["I_CON1"]
+  static_routes               = ["192.168.0.0/24", "192.168.1.0/24"]
 }
 
 data "aci_rest_managed" "mgmtInB" {
